@@ -59,3 +59,52 @@
     "rules": []
   }
 }
+/////////////////////
+{
+  "log": { "level": "info" },
+  "dns": {
+    "servers": [
+      { "tag": "cloudflare", "address": "https://1.1.1.1/dns-query", "detour": "direct" }
+    ],
+    "strategy": "prefer_ipv4",
+    "rules": []
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "interface_name": "singbox",
+      "inet4_address": ["172.19.0.1/30"],
+      "inet6_address": ["fdfe:dcba:9876::1/126"],
+      "auto_route": true,
+      "mtu": 1500,
+      "stack": "mixed",
+      "sniff": true
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "vless",
+      "tag": "vless-out",
+      "server": "94.103.1.74",           
+      "server_port": 443,
+      "uuid": "69bd5ce1-0025-4269-b8e2-136ef28f734e",             
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "google.com",     
+        "insecure": false,
+        "utls": { "enabled": true, "fingerprint": "chrome" },
+        "reality": { "enabled": false, "public_key": "hFg_STFZBH88z08re4TojkUK3KqqBlki9pOVK7_PNHE", "short_id": "05d46102b94f703c" }
+      },
+      "transport": { "type": "tcp" }
+    },
+    { "type": "direct", "tag": "direct" },
+    { "type": "block", "tag": "block" }
+  ],
+  "route": {
+    "final": "vless-out",
+    "rules": []
+  }
+}
+
