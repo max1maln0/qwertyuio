@@ -4,19 +4,25 @@
   },
 
   "inbounds": [
-    {
-      "type": "tun",
-      "tag": "tun-in",
+  {
+    "type": "tun",
+    "tag": "tun-in",
+    "stack": "system",
+    "auto_route": true,
+    "strict_route": false,
+    "mtu": 1400,
+    "inet4_address": "172.19.0.1/30",
+    "inet6_address": "fdfe:dcba:9876::1/126",
+    "route_address": ["172.19.0.0/30", "fdfe:dcba:9876::/126"],
+    "route_exclude_address": [
+      "10.0.0.0/8",
+      "172.16.0.0/12",
+      "192.168.0.0/16",
+      "fd00::/8"
+    ]
+  }
+],
 
-      "address": ["172.19.0.1/30", "fdfe:dcba:9876::1/126"],
-      "route_address": ["172.19.0.0/30", "fdfe:dcba:9876::/126"],
-      "route_exclude_address": ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fd00::/8"],
-
-      "auto_route": true,
-      "stack": "gvisor",
-      "mtu": 1280
-    }
-  ],
 
   "outbounds": [
     {
