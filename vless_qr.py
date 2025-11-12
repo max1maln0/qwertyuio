@@ -13,7 +13,7 @@
       "route_exclude_address": ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fd00::/8"],
 
       "auto_route": true,
-      "stack": "system",
+      "stack": "gvisor",
       "mtu": 1280
     }
   ],
