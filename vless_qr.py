@@ -46,7 +46,7 @@
         "alpn": ["h2", "http/1.1"],
         "utls": {
           "enabled": true,
-          "fingerprint": "chrome"
+          "fingerprint": "firefox"
         },
         "reality": {
           "enabled": true,
