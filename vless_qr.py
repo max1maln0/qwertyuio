@@ -57,7 +57,6 @@
           "enabled": true,
           "public_key": "hFg_STFZBH88z08re4TojkUK3KqqBlki9pOVK7_PNHE",
           "short_id": "05d46102b94f703c",
-          "spider_x": "/"
         }
       }
     },
