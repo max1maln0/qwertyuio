@@ -79,7 +79,7 @@
     "rules": [
       { "protocol": "dns", "outbound": "dns-out" },
       { "port": 53, "network": "udp", "outbound": "dns-out" },
-      { "geoip": "private", "outbound": "direct" },
+      { "ip_is_private": true, "outbound": "direct" },
       { "ip_cidr": ["224.0.0.0/3"], "outbound": "direct" }
     ]
   }
