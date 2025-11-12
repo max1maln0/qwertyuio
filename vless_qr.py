@@ -54,9 +54,6 @@
           "short_id": "05d46102b94f703c"
         }
       },
-      "transport": {
-        "type": "tcp"
-      },
       "domain_resolver": "doh"
     },
     { "type": "direct", "tag": "direct" },
