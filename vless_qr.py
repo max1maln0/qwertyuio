@@ -5,6 +5,7 @@
   },
 
   "dns": {
+    "strategy": "ipv4_only",
     "servers": [
       {
         "tag": "cf-doh",
@@ -18,8 +19,7 @@
         "server": "dns.google/dns-query",
         "detour": "vless-out"
       }
-    ],
-    "strategy": "ipv4_only"
+    ]
   },
 
   "inbounds": [
@@ -30,8 +30,14 @@
       "auto_route": true,
       "strict_route": false,
       "mtu": 1380,
-      "address": ["172.19.0.1/30", "fdfe:dcba:9876::1/126"],
-      "route_address": ["172.19.0.0/30", "fdfe:dcba:9876::/126"],
+      "address": [
+        "172.19.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "route_address": [
+        "172.19.0.0/30",
+        "fdfe:dcba:9876::/126"
+      ],
       "route_exclude_address": [
         "10.0.0.0/8",
         "172.16.0.0/12",
@@ -49,6 +55,7 @@
       "server_port": 443,
       "uuid": "69bd5ce1-0025-4269-b8e2-136ef28f734e",
       "flow": "xtls-rprx-vision",
+      "domain_resolver": "cf-doh",
       "tls": {
         "enabled": true,
         "server_name": "google.com",
@@ -56,7 +63,7 @@
         "reality": {
           "enabled": true,
           "public_key": "hFg_STFZBH88z08re4TojkUK3KqqBlki9pOVK7_PNHE",
-          "short_id": "05d46102b94f703c",
+          "short_id": "05d46102b94f703c"
         }
       }
     },
@@ -68,7 +75,6 @@
   "route": {
     "auto_detect_interface": true,
     "final": "vless-out",
-    "domain_strategy": "ipv4_only",
     "default_domain_resolver": { "server": "cf-doh" },
     "rules": [
       { "protocol": "dns", "outbound": "dns-out" },
@@ -76,14 +82,5 @@
       { "geoip": "private", "outbound": "direct" },
       { "ip_cidr": ["224.0.0.0/3"], "outbound": "direct" }
     ]
-  },
-
-  "experimental": {
-    "cache_file": {
-      "enabled": true,
-      "path": "cache.db",
-      "cache_id": "default",
-      "store_fakeip": true
-    }
   }
 }
