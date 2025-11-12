@@ -1,10 +1,20 @@
 {
-  "log": { "level": "info" },
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
 
   "dns": {
     "servers": [
-      { "address": "1.1.1.1" },
-      { "address": "8.8.8.8" }
+      {
+        "type": "https",
+        "server": "cloudflare-dns.com",
+        "tag": "doh"
+      },
+      {
+        "type": "local",
+        "tag": "localdns"
+      }
     ],
     "strategy": "prefer_ipv4"
   },
@@ -13,12 +23,12 @@
     {
       "type": "tun",
       "tag": "tun-in",
-      "inet4_address": "172.19.0.1/30",
-      "inet6_address": "fdfe:dcba:9876::1/126",
-      "mtu": 1500,
+      "address": ["172.19.0.1/30", "fdfe:dcba:9876::1/126"],
+      "route_address": ["172.19.0.0/30", "fdfe:dcba:9876::/126"],
+      "route_exclude_address": ["192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12", "fd00::/8"],
       "auto_route": true,
-      "strict_route": false,
-      "stack": "system"
+      "stack": "system",
+      "mtu": 1280
     }
   ],
 
@@ -26,41 +36,39 @@
     {
       "type": "vless",
       "tag": "vless-out",
-
-      "server": "94.103.1.74",          // например: example.com
+      "server": "94.103.1.74",
       "server_port": 443,
-
-      "uuid": "69bd5ce1-0025-4269-b8e2-136ef28f734e",              // ТВОЙ VLESS-ключ (UUID)
-      "flow": "xtls-rprx-vision",                         // оставь пустым, если не используешь xtls-rprx-vision
-
-      "packet_encoding": "xudp",          // можно удалить, если не нужно
-
+      "uuid": "69bd5ce1-0025-4269-b8e2-136ef28f734e",
+      "flow": "xtls-rprx-vision",
       "tls": {
         "enabled": true,
-        "server_name": "google.com", // обычно тот же домен, что и в Host заголовке
-        "insecure": false,
-        "utls": { "enabled": true, "fingerprint": "chrome" },
-
+        "server_name": "google.com",
+        "alpn": ["h2", "http/1.1"],
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
         "reality": {
-          "enabled": false,
+          "enabled": true,
           "public_key": "hFg_STFZBH88z08re4TojkUK3KqqBlki9pOVK7_PNHE",
-          "short_id": "05d46102b94f703c"
+          "short_id": ["05d46102b94f703c"]
         }
       },
-
       "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": { "Host": "google.com" }
-      }
+        "type": "tcp"
+      },
+      "domain_resolver": "doh"
     },
-
     { "type": "direct", "tag": "direct" },
     { "type": "block",  "tag": "block" }
   ],
 
   "route": {
-    "auto_detect_interface": true,
-    "final": "vless-out"
+    "final": "vless-out",
+    "default_domain_resolver": { "server": "doh" },
+    "rules": [
+      { "ip": ["SERVER_IP_CIDR"], "outbound": "direct" },
+      { "geoip": ["private"], "outbound": "direct" }
+    ]
   }
 }
