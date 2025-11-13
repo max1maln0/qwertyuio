@@ -1,24 +1,11 @@
 {
-  "log": {
-    "level": "info",
-    "timestamp": true
-  },
+  "log": { "level": "info", "timestamp": true },
 
   "dns": {
     "strategy": "ipv4_only",
     "servers": [
-      {
-        "tag": "cf-doh",
-        "type": "https",
-        "server": "cloudflare-dns.com/dns-query",
-        "detour": "vless-out"
-      },
-      {
-        "tag": "gg-doh",
-        "type": "https",
-        "server": "dns.google/dns-query",
-        "detour": "vless-out"
-      }
+      { "tag": "cf-doh", "type": "https", "server": "cloudflare-dns.com/dns-query", "detour": "vless-out" },
+      { "tag": "gg-doh", "type": "https", "server": "dns.google/dns-query", "detour": "vless-out" }
     ]
   },
 
@@ -30,20 +17,9 @@
       "auto_route": true,
       "strict_route": false,
       "mtu": 1380,
-      "address": [
-        "172.19.0.1/30",
-        "fdfe:dcba:9876::1/126"
-      ],
-      "route_address": [
-        "172.19.0.0/30",
-        "fdfe:dcba:9876::/126"
-      ],
-      "route_exclude_address": [
-        "10.0.0.0/8",
-        "172.16.0.0/12",
-        "192.168.0.0/16",
-        "fd00::/8"
-      ]
+      "address": ["172.19.0.1/30", "fdfe:dcba:9876::1/126"],
+      "route_address": ["172.19.0.0/30", "fdfe:dcba:9876::/126"],
+      "route_exclude_address": ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fd00::/8"]
     }
   ],
 
@@ -79,7 +55,9 @@
     "rules": [
       { "protocol": "dns", "outbound": "dns-out" },
       { "port": 53, "network": "udp", "outbound": "dns-out" },
+
       { "ip_is_private": true, "outbound": "direct" },
+
       { "ip_cidr": ["224.0.0.0/3"], "outbound": "direct" }
     ]
   }
