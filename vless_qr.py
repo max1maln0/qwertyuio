@@ -1,26 +1,43 @@
 {
-  "log": { "level": "info", "timestamp": true },
+  "log": {
+    "level": "info"
+  },
 
   "dns": {
-  "strategy": "ipv4_only",
-  "servers": [
-    { "tag": "cf-doh", "type": "https", "server": "https://cloudflare-dns.com/dns-query", "detour": "vless-out" },
-    { "tag": "gg-doh", "type": "https", "server": "https://dns.google/dns-query", "detour": "vless-out" }
-  ]
-}
-
+    "servers": [
+      {
+        "tag": "remote",
+        "address": "https://1.1.1.1/dns-query"
+      },
+      {
+        "tag": "local",
+        "address": "local"
+      }
+    ]
+  },
 
   "inbounds": [
     {
       "type": "tun",
       "tag": "tun-in",
-      "stack": "gvisor",
+      "address": [
+        "172.19.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "route_address": [
+        "172.19.0.0/30",
+        "fdfe:dcba:9876::/126"
+      ],
+      "route_exclude_address": [
+        "192.168.0.0/16",
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "fd00::/8"
+      ],
       "auto_route": true,
       "strict_route": false,
-      "mtu": 1380,
-      "address": ["172.19.0.1/30", "fdfe:dcba:9876::1/126"],
-      "route_address": ["172.19.0.0/30", "fdfe:dcba:9876::/126"],
-      "route_exclude_address": ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fd00::/8"]
+      "stack": "gvisor",
+      "mtu": 1280
     }
   ],
 
@@ -32,11 +49,14 @@
       "server_port": 443,
       "uuid": "69bd5ce1-0025-4269-b8e2-136ef28f734e",
       "flow": "xtls-rprx-vision",
-      "domain_resolver": "cf-doh",
+      "network": "tcp",
       "tls": {
         "enabled": true,
         "server_name": "google.com",
-        "utls": { "enabled": true, "fingerprint": "firefox" },
+        "utls": {
+          "enabled": true,
+          "fingerprint": "firefox"
+        },
         "reality": {
           "enabled": true,
           "public_key": "hFg_STFZBH88z08re4TojkUK3KqqBlki9pOVK7_PNHE",
@@ -44,22 +64,41 @@
         }
       }
     },
-    { "type": "dns", "tag": "dns-out" },
-    { "type": "direct", "tag": "direct" },
-    { "type": "block", "tag": "block" }
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    }
   ],
 
   "route": {
     "auto_detect_interface": true,
-    "final": "vless-out",
-    "default_domain_resolver": { "server": "cf-doh" },
     "rules": [
-      { "protocol": "dns", "outbound": "dns-out" },
-      { "port": 53, "network": "udp", "outbound": "dns-out" },
-
-      { "ip_is_private": true, "outbound": "direct" },
-
-      { "ip_cidr": ["224.0.0.0/3"], "outbound": "direct" }
+      {
+        "inbound": [
+          "tun-in"
+        ],
+        "ip_cidr": [
+          "10.0.0.0/8",
+          "172.16.0.0/12",
+          "192.168.0.0/16",
+          "127.0.0.0/8",
+          "::1/128",
+          "fc00::/7"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "inbound": [
+          "tun-in"
+        ],
+        "port": 53,
+        "network": "udp",
+        "outbound": "direct"
+      }
     ]
   }
 }
