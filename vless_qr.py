@@ -1,55 +1,54 @@
 {
   "log": {
-    "level": "info"
+    "disabled": false,
+    "level": "info",
+    "timestamp": true
   },
 
   "dns": {
     "servers": [
       {
-        "tag": "remote",
-        "address": "https://1.1.1.1/dns-query"
+        "tag": "dns-remote",
+        "address": "1.1.1.1",
+        "strategy": "ipv4_only",
+        "detour": "proxy"
       },
       {
-        "tag": "local",
-        "address": "local"
+        "tag": "dns-direct",
+        "address": "8.8.8.8",
+        "strategy": "ipv4_only",
+        "detour": "direct"
       }
-    ]
+    ],
+    "strategy": "ipv4_only",
+    "independent_cache": true
   },
 
   "inbounds": [
     {
       "type": "tun",
       "tag": "tun-in",
-      "address": [
-        "172.19.0.1/30",
-        "fdfe:dcba:9876::1/126"
-      ],
-      "route_address": [
-        "172.19.0.0/30",
-        "fdfe:dcba:9876::/126"
-      ],
-      "route_exclude_address": [
-        "192.168.0.0/16",
-        "10.0.0.0/8",
-        "172.16.0.0/12",
-        "fd00::/8"
-      ],
+      "interface_name": "tun0",
+      "inet4_address": "172.19.0.1/30",
+      "inet6_address": "fdfe:dcba:9876::1/126",
+      "mtu": 1350,
       "auto_route": true,
-      "strict_route": false,
+      "strict_route": true,
       "stack": "gvisor",
-      "mtu": 1280
+      "sniff": true,
+      "endpoint_independent_nat": true
     }
   ],
 
   "outbounds": [
     {
       "type": "vless",
-      "tag": "vless-out",
+      "tag": "proxy",
       "server": "94.103.1.74",
       "server_port": 443,
       "uuid": "69bd5ce1-0025-4269-b8e2-136ef28f734e",
       "flow": "xtls-rprx-vision",
-      "network": "tcp",
+      "packet_encoding": "xudp",
       "tls": {
         "enabled": true,
         "server_name": "google.com",
@@ -71,33 +70,21 @@
     {
       "type": "block",
       "tag": "block"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
     }
   ],
 
   "route": {
     "auto_detect_interface": true,
+    "override_android_vpn": true,
+    "final": "proxy",
     "rules": [
       {
-        "inbound": [
-          "tun-in"
-        ],
-        "ip_cidr": [
-          "10.0.0.0/8",
-          "172.16.0.0/12",
-          "192.168.0.0/16",
-          "127.0.0.0/8",
-          "::1/128",
-          "fc00::/7"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "inbound": [
-          "tun-in"
-        ],
-        "port": 53,
-        "network": "udp",
-        "outbound": "direct"
+        "outbound": "dns-out",
+        "port": [53]
       }
     ]
   }
