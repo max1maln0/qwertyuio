@@ -1,8 +1,6 @@
 {
   "log": {
-    "disabled": false,
-    "level": "info",
-    "timestamp": true
+    "level": "info"
   },
 
   "dns": {
@@ -20,10 +18,10 @@
       "tag": "tun-in",
       "interface_name": "tun0",
       "inet4_address": "172.20.0.1/30",
-      "mtu": 1500,
+      "mtu": 1280,
       "auto_route": true,
-      "strict_route": false,
-      "stack": "gvisor"
+      "strict_route": true,
+      "stack": "system"
     }
   ],
 
@@ -52,15 +50,8 @@
       }
     },
 
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-
-    {
-      "type": "block",
-      "tag": "block"
-    }
+    { "type": "direct", "tag": "direct" },
+    { "type": "block", "tag": "block" }
   ],
 
   "route": {
