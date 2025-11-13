@@ -11,13 +11,9 @@
         "tag": "dns-remote",
         "type": "https",
         "server": "https://cloudflare-dns.com/dns-query",
-        "strategy": "ipv4_only",
         "detour": "proxy"
       }
-    ],
-    "strategy": "ipv4_only",
-    "independent_cache": true,
-    "disable_cache": false
+    ]
   },
 
   "inbounds": [
@@ -30,8 +26,7 @@
       "mtu": 1500,
       "auto_route": true,
       "strict_route": false,
-      "stack": "gvisor",
-      "sniff": false
+      "stack": "gvisor"
     }
   ],
 
@@ -84,10 +79,6 @@
       {
         "type": "dns",
         "outbound": "dns-out"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "proxy"
       }
     ]
   }
