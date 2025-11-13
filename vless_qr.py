@@ -9,19 +9,15 @@
     "servers": [
       {
         "tag": "dns-remote",
-        "address": "1.1.1.1",
+        "type": "https",
+        "server": "https://cloudflare-dns.com/dns-query",
         "strategy": "ipv4_only",
         "detour": "proxy"
-      },
-      {
-        "tag": "dns-direct",
-        "address": "8.8.8.8",
-        "strategy": "ipv4_only",
-        "detour": "direct"
       }
     ],
     "strategy": "ipv4_only",
-    "independent_cache": true
+    "independent_cache": true,
+    "disable_cache": false
   },
 
   "inbounds": [
@@ -29,14 +25,13 @@
       "type": "tun",
       "tag": "tun-in",
       "interface_name": "tun0",
-      "inet4_address": "172.19.0.1/30",
-      "inet6_address": "fdfe:dcba:9876::1/126",
-      "mtu": 1350,
+      "inet4_address": "172.20.0.1/30",
+      "inet6_address": "fd00::1/126",
+      "mtu": 1500,
       "auto_route": true,
-      "strict_route": true,
+      "strict_route": false,
       "stack": "gvisor",
-      "sniff": true,
-      "endpoint_independent_nat": true
+      "sniff": false
     }
   ],
 
@@ -49,6 +44,7 @@
       "uuid": "69bd5ce1-0025-4269-b8e2-136ef28f734e",
       "flow": "xtls-rprx-vision",
       "packet_encoding": "xudp",
+
       "tls": {
         "enabled": true,
         "server_name": "google.com",
@@ -63,28 +59,35 @@
         }
       }
     },
+
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+
     {
       "type": "direct",
       "tag": "direct"
     },
+
     {
       "type": "block",
       "tag": "block"
-    },
-    {
-      "type": "dns",
-      "tag": "dns-out"
     }
   ],
 
   "route": {
+    "final": "proxy",
     "auto_detect_interface": true,
     "override_android_vpn": true,
-    "final": "proxy",
     "rules": [
       {
-        "outbound": "dns-out",
-        "port": [53]
+        "type": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "proxy"
       }
     ]
   }
