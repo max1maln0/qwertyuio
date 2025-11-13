@@ -2,12 +2,13 @@
   "log": { "level": "info", "timestamp": true },
 
   "dns": {
-    "strategy": "ipv4_only",
-    "servers": [
-      { "tag": "cf-doh", "type": "https", "server": "cloudflare-dns.com/dns-query", "detour": "vless-out" },
-      { "tag": "gg-doh", "type": "https", "server": "dns.google/dns-query", "detour": "vless-out" }
-    ]
-  },
+  "strategy": "ipv4_only",
+  "servers": [
+    { "tag": "cf-doh", "type": "https", "server": "https://cloudflare-dns.com/dns-query", "detour": "vless-out" },
+    { "tag": "gg-doh", "type": "https", "server": "https://dns.google/dns-query", "detour": "vless-out" }
+  ]
+}
+
 
   "inbounds": [
     {
