@@ -8,16 +8,10 @@
   "dns": {
     "servers": [
       {
-        "tag": "dns-remote",
-        "type": "https",
-        "server": "https://cloudflare-dns.com/dns-query",
-        "strategy": "ipv4_only",
-        "detour": "proxy"
+        "tag": "dns-ip",
+        "address": "1.1.1.1"
       }
-    ],
-    "strategy": "ipv4_only",
-    "independent_cache": true,
-    "disable_cache": false
+    ]
   },
 
   "inbounds": [
@@ -26,12 +20,10 @@
       "tag": "tun-in",
       "interface_name": "tun0",
       "inet4_address": "172.20.0.1/30",
-      "inet6_address": "fd00::1/126",
       "mtu": 1500,
       "auto_route": true,
       "strict_route": false,
-      "stack": "gvisor",
-      "sniff": false
+      "stack": "gvisor"
     }
   ],
 
@@ -61,11 +53,6 @@
     },
 
     {
-      "type": "dns",
-      "tag": "dns-out"
-    },
-
-    {
       "type": "direct",
       "tag": "direct"
     },
@@ -79,16 +66,6 @@
   "route": {
     "final": "proxy",
     "auto_detect_interface": true,
-    "override_android_vpn": true,
-    "rules": [
-      {
-        "type": "dns",
-        "outbound": "dns-out"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "proxy"
-      }
-    ]
+    "override_android_vpn": true
   }
 }
